@@ -1,0 +1,32 @@
+services:
+    db:
+        image: postgres:16
+        environment:
+            POSTGRES_USER: habit
+            POSTGRES_PASSWORD: habitpwd
+            POSTGRES_DB : habitdb
+        ports: 
+            - "5432:5432"
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U habit -d habitdb"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+    api:
+        build : .
+        depends_on: db
+        condition: service_healthy
+        environment: 
+              ASPNETCORE_ENVIRONMNET : Development
+              ConnectionStrings_DefaultConnection : "Host=db;Port=5432;Database=habitdb;Username=habit;Password=habitpwd"
+              
+        ports:
+             - "8082:8080"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8082/healthz"]
+            interval: 10s
+            timeout: 3s
+            retries: 10
+              

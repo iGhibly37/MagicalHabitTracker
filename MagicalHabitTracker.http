@@ -1,0 +1,6 @@
+@MagicalHabitTracker_HostAddress = http://localhost:5023
+
+GET {{MagicalHabitTracker_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
