@@ -1,0 +1,2 @@
+dotnet ef migrations add * //Inserire qualsiasi nome per indicare l'ultima modifica fatta al database
+dotnet ef database update //Applica le migrazioni al database

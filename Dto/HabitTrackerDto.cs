@@ -12,6 +12,6 @@ namespace MagicalHabitTracker.Dto
 
         public DateTime? CompletedAtUtc { get; set; }
 
-        public Habit Habit { get; set; }
+        public int HabitId { get; set; }
     }
 }

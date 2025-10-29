@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MagicalHabitTracker.Model
 {
@@ -29,6 +30,11 @@ namespace MagicalHabitTracker.Model
         public HabitSchedule? HabitSchedule { get; set; }
 
         public ICollection<Tracker> Trackers { get; set; } = new List<Tracker>();
+
+        [Required]
+        public int UserId { get; set; }
+        [Required]
+        public User User { get; set; }
 
     }
 

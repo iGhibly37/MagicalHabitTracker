@@ -3,8 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var conn = builder.Configuration.GetConnectionString("DefaultConnection")
+          ?? throw new InvalidOperationException("Missing ConnectionStrings:DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(conn));
+
+
 
 // Add services to the container.
 builder.Services.AddControllers();

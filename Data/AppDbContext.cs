@@ -11,23 +11,25 @@ namespace MagicalHabitTracker.Data
         public DbSet<HabitSchedule> Schedules { get; set; }
         public DbSet<Tracker> HabitTrackers { get; set; }
 
+        public DbSet<User> Users { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Habit>()
                 .HasIndex(h => h.Name);
 
             modelBuilder.Entity<Habit>()
-                .HasOne(h=>h.HabitSchedule)
+                .HasOne(h => h.HabitSchedule)
                 .WithOne(hs => hs.Habit)
                 .HasForeignKey<HabitSchedule>(hs => hs.HabitId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Habit>()
-                .HasMany(h=>h.Trackers)
-                .WithOne(t=>t.Habit)
+                .HasMany(h => h.Trackers)
+                .WithOne(t => t.Habit)
                 .HasForeignKey(t => t.HabitId)
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
             modelBuilder.Entity<HabitSchedule>()
                 .HasIndex(hs => hs.HabitId)
                 .IsUnique();
@@ -35,6 +37,19 @@ namespace MagicalHabitTracker.Data
             modelBuilder.Entity<Tracker>()
                 .HasIndex(t => new { t.HabitId, t.Date })
                 .IsUnique();
+
+            modelBuilder.Entity<User>()
+                .HasMany(h => h.Habits)
+                .WithOne(u => u.User)
+                .HasForeignKey(h => h.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<User>()
+                        .OwnsOne(u => u.Address)
+                        .HasIndex("ZipCode")
+                        .HasDatabaseName("IX_User_Address_ZipCode");
+
+
 
         }
 

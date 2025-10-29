@@ -1,5 +1,6 @@
 ﻿using MagicalHabitTracker.Model;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MagicalHabitTracker.Dto
 {
@@ -14,5 +15,9 @@ namespace MagicalHabitTracker.Dto
         public int TargetPeriod { get; set; } = 1;
         public bool IsArchived { get; set; } = false;
         public HabitScheduleDto Schedule { get; set; }
+
+        public ICollection<HabitTrackerDto> Trackers { get; set; } = new List<HabitTrackerDto>();
+        [Required]
+        public int UserId { get; set; }
     }
 }

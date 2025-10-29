@@ -18,7 +18,7 @@ namespace MagicalHabitTracker.Dto
 
         public bool IsActive { get; set; } = false;
 
-        public Habit Habit { get; set; } = null!;
+        public HabitEditDto HabitEditDto { get; set; } = null!;
 
         public DateTime? NextDueUtc { get; set; }
 
