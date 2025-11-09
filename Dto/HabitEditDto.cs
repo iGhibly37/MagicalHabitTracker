@@ -17,7 +17,6 @@ namespace MagicalHabitTracker.Dto
         public HabitScheduleDto Schedule { get; set; }
 
         public ICollection<HabitTrackerDto> Trackers { get; set; } = new List<HabitTrackerDto>();
-        [Required]
-        public int UserId { get; set; }
+
     }
 }

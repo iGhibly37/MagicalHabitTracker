@@ -9,17 +9,17 @@ namespace MagicalHabitTracker.Dto
 
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        [Required,   ]
+        [Required]
         public string Email { get; set; }
 
-        [Required,   ]
+        [Required]
         public string Password { get; set; }
 
         public Address? Address { get; set; }
         [Required, MaxLength(15),   ]
         public string PhoneNumber { get; set; }
 
-        [Required, MaxLength(20),   ]
+        [Required, MaxLength(20)]
         public string Username { get; set; }
         [Required]
         public string Role { get; set; } = RoleEnum.User;

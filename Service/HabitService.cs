@@ -16,15 +16,22 @@ namespace MagicalHabitTracker.Service
             this.appDbContext = appDbContext;
         }
 
-        public async Task<int> AddHabitAsync(HabitEditDto habitDto)
+        public async Task<int> AddHabitAsync(HabitEditDto habitDto, int userId)
         {
             if(String.IsNullOrWhiteSpace(habitDto.Name))
             {
                 throw new ArgumentException("Habit name cannot be null or empty.");
             }
 
+            if(String.IsNullOrWhiteSpace(habitDto.Name.Trim()))
+            {
+                throw new ArgumentException("Habit name cannot be empty or whitespace.");
+            }
+
+
             Habit habit = new Habit
             {
+                UserId = userId,
                 Name = habitDto.Name,
                 Description = habitDto.Description,
                 Periodicity = habitDto.Periodicity,

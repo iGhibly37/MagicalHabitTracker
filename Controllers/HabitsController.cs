@@ -9,6 +9,7 @@ using MagicalHabitTracker.Data;
 using MagicalHabitTracker.Model;
 using MagicalHabitTracker.Dto;
 using MagicalHabitTracker.Service;
+using System.Security.Claims;
 
 namespace MagicalHabitTracker.Controllers
 {
@@ -17,10 +18,10 @@ namespace MagicalHabitTracker.Controllers
     public class HabitsController : Controller
     {
         private readonly AppDbContext _context;
-        private readonly HabitService _habitService;
+        private readonly IHabitService _habitService;
        
 
-        public HabitsController(AppDbContext context, HabitService habitService)
+        public HabitsController(AppDbContext context, IHabitService habitService)
         {
             _context = context;
             _habitService = habitService;
@@ -39,10 +40,16 @@ namespace MagicalHabitTracker.Controllers
             return Ok(habit);
         }
 
-        [HttpPost]
+        [HttpPost("registerHabit")]
         public async Task<IActionResult> Create(HabitEditDto habitDto)
         {
-            var Id = await _habitService.AddHabitAsync(habitDto);
+            var sub = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(!int.TryParse(sub, out int userId))
+            {
+                return Unauthorized();
+            }
+
+            var Id = await _habitService.AddHabitAsync(habitDto, userId);
 
             return CreatedAtAction(nameof(GetById), new { Id = Id }, habitDto);
         }

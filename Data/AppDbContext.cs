@@ -49,6 +49,9 @@ namespace MagicalHabitTracker.Data
                         .HasIndex("ZipCode")
                         .HasDatabaseName("IX_User_Address_ZipCode");
 
+            modelBuilder.Entity<Habit>()
+                .HasIndex(h => new {h.Name, h.UserId});
+
 
 
         }
