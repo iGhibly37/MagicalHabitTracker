@@ -1,17 +1,15 @@
 ﻿using MagicalHabitTracker.Model;
 using System.ComponentModel.DataAnnotations;
 
-namespace MagicalHabitTracker.Dto
+namespace MagicalHabitTracker.Dto.HabitTrackerDtos
 {
     public class HabitTrackerDto
     {
-        public bool IsCompleted { get; set; }
-
-        [Required]
-        public DateOnly Date {  get; set; }
 
         public DateTime? CompletedAtUtc { get; set; }
 
         public int HabitId { get; set; }
+
+        public int Id { get; set; }
     }
 }

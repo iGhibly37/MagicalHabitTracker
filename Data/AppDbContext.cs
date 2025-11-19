@@ -9,7 +9,7 @@ namespace MagicalHabitTracker.Data
 
         public DbSet<Habit> Habits { get; set; }
         public DbSet<HabitSchedule> Schedules { get; set; }
-        public DbSet<Tracker> HabitTrackers { get; set; }
+        public DbSet<HabitTracker> HabitTrackers { get; set; }
 
         public DbSet<User> Users { get; set; }
 
@@ -34,8 +34,8 @@ namespace MagicalHabitTracker.Data
                 .HasIndex(hs => hs.HabitId)
                 .IsUnique();
 
-            modelBuilder.Entity<Tracker>()
-                .HasIndex(t => new { t.HabitId, t.Date })
+            modelBuilder.Entity<HabitTracker>()
+                .HasIndex(t => new { t.HabitId, t.CompletedAtUtc })
                 .IsUnique();
 
             modelBuilder.Entity<User>()

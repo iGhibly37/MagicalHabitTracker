@@ -1,28 +1,27 @@
-﻿using MagicalHabitTracker.Model;
+﻿using MagicalHabitTracker.Dto.HabitDtos;
+using MagicalHabitTracker.Model;
 using System.ComponentModel.DataAnnotations;
 
-namespace MagicalHabitTracker.Dto
+namespace MagicalHabitTracker.Dto.ScheduleDtos
 {
-    public class HabitScheduleDto
+    public class CreateHabitScheduleDto
     {
-        public String TimeZoneId { get; set; } = String.Empty;
+        public string TimeZoneId { get; set; } = string.Empty;
 
         public TimeOnly PreferredLocalTime { get; set; }
 
         public WeeklyDaysMask WeeklyDaysMask { get; set; } = WeeklyDaysMask.AllDays;
 
-        [Range(0,31)]
-        public int DayOfMonth { get; set; } 
-
         public int ReminderOffsetsMinutes { get; set; }
 
         public bool IsActive { get; set; } = false;
 
-        public HabitEditDto HabitEditDto { get; set; } = null!;
-
+        
         public DateTime? NextDueUtc { get; set; }
 
         public DateTime? SnoozeUntilUtc { get; set; }
+
+        public int HabitId { get; set; }
 
     }
 }

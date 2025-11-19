@@ -1,15 +1,15 @@
-﻿using MagicalHabitTracker.Dto;
+﻿using MagicalHabitTracker.Dto.HabitDtos;
 using MagicalHabitTracker.Model;
 
 namespace MagicalHabitTracker.Service
 {
     public interface IHabitService
     {
-        Task<List<Habit>> GetAllHabitsAsync();
-        Task<Habit?> GetHabitByIdAsync(int id);
-        Task<Habit?> GetHabitByName(String name);
-        Task<int> AddHabitAsync(HabitEditDto habit, int userId);
-        Task<bool> UpdateHabitAsync(int id, HabitEditDto habit);
-        Task<bool> DeleteHabitAsync(int id);
+        public Task<List<GetHabitDto>> GetAllHabitsAsync();
+        public Task<GetHabitDto?> GetHabitByIdAsync(int id);
+        public Task<GetHabitDto?> GetHabitByName(String name);
+        public Task<int> AddHabitAsync(CreateHabitDto habit, int userId);
+        public Task<bool> UpdateHabitAsync(int id, UpdateHabitDto habit);
+        public Task<bool> DeleteHabitAsync(int id);
     }
 }

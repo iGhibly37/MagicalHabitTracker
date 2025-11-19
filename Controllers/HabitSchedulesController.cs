@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MagicalHabitTracker.Data;
 using MagicalHabitTracker.Model;
 using MagicalHabitTracker.Service;
-using MagicalHabitTracker.Dto;
+using MagicalHabitTracker.Dto.ScheduleDtos;
 
 namespace MagicalHabitTracker.Controllers
 {
@@ -26,7 +26,7 @@ namespace MagicalHabitTracker.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HabitScheduleDto>>> GetSchedules()
+        public async Task<ActionResult<IEnumerable<GetHabitScheduleDto>>> GetSchedules()
         {
             var schedules = await _habitScheduleService.GetAllSchedulesAsync();
             return Ok(schedules);
@@ -34,7 +34,7 @@ namespace MagicalHabitTracker.Controllers
 
         // GET: api/HabitSchedules/5
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<HabitScheduleDto>> GetHabitSchedule(int id)
+        public async Task<ActionResult<GetHabitScheduleDto>> GetHabitSchedule(int id)
         {
             var schedule = await _habitScheduleService.GetScheduleByIdAsync(id);
             if(schedule == null) return NotFound();
@@ -43,28 +43,32 @@ namespace MagicalHabitTracker.Controllers
             
         }
 
-        // PUT: api/HabitSchedules/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> PutHabitSchedule(int id, HabitScheduleDto dto)
+        public async Task<IActionResult> PutHabitSchedule(int id, UpdateHabitScheduleDto dto)
         {
-            bool updated = await _habitScheduleService.UpdateScheduleAsync(id, dto);
+            bool updated = await _habitScheduleService.PutScheduleAsync(id, dto);
             if(!updated) return NotFound();
             return NoContent();
         }
 
-        // POST: api/HabitSchedules
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("{id:int}")]
-        public async Task<ActionResult<HabitScheduleDto>> PostHabitSchedule(int habitId, HabitScheduleDto dto)
+        public async Task<ActionResult<CreateHabitScheduleDto>> PostHabitSchedule(int habitId, CreateHabitScheduleDto dto)
         {
             var Id = await _habitScheduleService.CreateScheduleAsync(habitId, dto);
 
             return CreatedAtAction(nameof(GetHabitSchedule), new { id = Id }, dto);
         }
 
-        // DELETE: api/HabitSchedules/5
-        [HttpDelete("{id}")]
+        [HttpPatch("/patch/{id:int}")]
+        public async Task<ActionResult<PatchScheduleDto>> PatchHabitSchedule(int habitId, PatchScheduleDto dto)
+        {
+            bool updated = await _habitScheduleService.PatchScheduleAsync(habitId, dto);
+            if(!updated) return NotFound();
+            return NoContent();
+        }
+
+
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteHabitSchedule(int id)
         {
           var habit = await _habitScheduleService.DeleteScheduleAsync(id);
@@ -72,9 +76,5 @@ namespace MagicalHabitTracker.Controllers
             return NoContent();
         }
 
-        //private bool HabitScheduleExists(int id)
-        //{
-        //    return _context.Schedules.Any(e => e.Id == id);
-        //}
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MagicalHabitTracker.Data;
-using MagicalHabitTracker.Dto;
+using MagicalHabitTracker.Dto.HabitDtos;
+using MagicalHabitTracker.Dto.ScheduleDtos;
 using MagicalHabitTracker.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,14 +17,14 @@ namespace MagicalHabitTracker.Service
             this.appDbContext = appDbContext;
         }
 
-        public async Task<int> AddHabitAsync(HabitEditDto habitDto, int userId)
+        public async Task<int> AddHabitAsync(CreateHabitDto habitDto, int userId)
         {
-            if(String.IsNullOrWhiteSpace(habitDto.Name))
+            if (String.IsNullOrWhiteSpace(habitDto.Name))
             {
                 throw new ArgumentException("Habit name cannot be null or empty.");
             }
 
-            if(String.IsNullOrWhiteSpace(habitDto.Name.Trim()))
+            if (String.IsNullOrWhiteSpace(habitDto.Name.Trim()))
             {
                 throw new ArgumentException("Habit name cannot be empty or whitespace.");
             }
@@ -47,7 +48,7 @@ namespace MagicalHabitTracker.Service
         public async Task<bool> DeleteHabitAsync(int id)
         {
             var habit = await appDbContext.Habits.FindAsync(id);
-            if(habit == null || habit.Id <= 0)
+            if (habit == null || habit.Id <= 0)
                 throw new ArgumentException("Invalid habit.");
 
 
@@ -56,26 +57,68 @@ namespace MagicalHabitTracker.Service
             return true;
         }
 
-        public async Task<List<Habit>> GetAllHabitsAsync()
+        public async Task<List<GetHabitDto>> GetAllHabitsAsync()
         {
-           return await appDbContext.Habits.OrderBy(h => h.IsArchived)
-                .ThenBy(h => h.Name)
-                .AsNoTracking()
-                .ToListAsync();
+            return await appDbContext.Habits.OrderBy(h => h.IsArchived == false)
+                 .ThenBy(h => h.Name)
+                 .AsNoTracking()
+                 .Select(h => new GetHabitDto
+                 {
+                     Name = h.Name,
+                     Description = h.Description,
+                     TargetPeriod = h.TargetPeriod,
+                     CreatedAt = h.CreatedAt,
+                     HabitSchedule = h.HabitSchedule != null ? new GetHabitScheduleDto
+                     {
+                         WeeklyDaysMask = h.HabitSchedule.WeeklyDaysMask,
+                         TimeZoneId = h.HabitSchedule.TimeZoneId,
+                         PreferredLocalTime = h.HabitSchedule.PreferredLocalTime,
+                         IsActive = h.HabitSchedule.IsActive,
+                         NextDueUtc = h.HabitSchedule.NextDueUtc
+                     } : null,
+                 }).ToListAsync();
 
         }
 
-        public async Task<Habit?> GetHabitByIdAsync(int id){
-            return await appDbContext.Habits.AsNoTracking().FirstOrDefaultAsync(h => h.Id == id);
-
-        }
-
-        public async Task<Habit?> GetHabitByName(string name)
+        public async Task<GetHabitDto?> GetHabitByIdAsync(int id)
         {
-           return await appDbContext.Habits.AsNoTracking().FirstOrDefaultAsync(h => h.Name == name);
+            return await appDbContext.Habits.AsNoTracking().Where(h => h.Id == id).Select(h => new GetHabitDto
+            {
+                Name = h.Name,
+                Description = h.Description,
+                TargetPeriod = h.TargetPeriod,
+                CreatedAt = h.CreatedAt,
+                HabitSchedule = h.HabitSchedule != null ? new GetHabitScheduleDto
+                {
+                    WeeklyDaysMask = h.HabitSchedule.WeeklyDaysMask,
+                    TimeZoneId = h.HabitSchedule.TimeZoneId,
+                    PreferredLocalTime = h.HabitSchedule.PreferredLocalTime,
+                    IsActive = h.HabitSchedule.IsActive,
+                    NextDueUtc = h.HabitSchedule.NextDueUtc
+                } : null,
+            }).FirstOrDefaultAsync();
         }
 
-        public async Task<bool> UpdateHabitAsync(int id, HabitEditDto habitDto)
+        public async Task<GetHabitDto?> GetHabitByName(string name)
+        {
+            return await appDbContext.Habits.AsNoTracking().Where(h => h.Name == name).Select(h => new GetHabitDto
+            {
+                Name = h.Name,
+                Description = h.Description,
+                TargetPeriod = h.TargetPeriod,
+                CreatedAt = h.CreatedAt,
+                HabitSchedule = h.HabitSchedule != null ? new GetHabitScheduleDto
+                {
+                    WeeklyDaysMask = h.HabitSchedule.WeeklyDaysMask,
+                    TimeZoneId = h.HabitSchedule.TimeZoneId,
+                    PreferredLocalTime = h.HabitSchedule.PreferredLocalTime,
+                    IsActive = h.HabitSchedule.IsActive,
+                    NextDueUtc = h.HabitSchedule.NextDueUtc
+                } : null,
+            }).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> UpdateHabitAsync(int id, UpdateHabitDto habitDto)
         {
             var habitExisting = await appDbContext.Habits.FindAsync(id);
             if (habitExisting == null) return false;

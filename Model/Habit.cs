@@ -29,7 +29,7 @@ namespace MagicalHabitTracker.Model
 
         public HabitSchedule? HabitSchedule { get; set; }
 
-        public ICollection<Tracker> Trackers { get; set; } = new List<Tracker>();
+        public ICollection<HabitTracker> Trackers { get; set; } = new List<HabitTracker>();
 
         [Required]
         public int UserId { get; set; }

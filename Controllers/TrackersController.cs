@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MagicalHabitTracker.Data;
 using MagicalHabitTracker.Model;
 using MagicalHabitTracker.Service;
-using MagicalHabitTracker.Dto;
+using MagicalHabitTracker.Dto.HabitTrackerDtos;
 
 namespace MagicalHabitTracker.Controllers
 {
@@ -46,18 +46,18 @@ namespace MagicalHabitTracker.Controllers
             return Ok(tracker);
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> PutTracker(int id, HabitTrackerDto dto)
-        {
-            var updated = await _trackerService.UpdateTrackerAsync(id, dto);
-            if(!updated) return NotFound();
-            return NoContent();
-        }
+        //[HttpPut("{id:int}")]
+        //public async Task<IActionResult> PutTracker(int id, HabitTrackerDto dto)
+        //{
+        //    var updated = await _trackerService.UpdateTrackerAsync(id, dto);
+        //    if (!updated) return NotFound();
+        //    return NoContent();
+        //}
 
         // POST: api/Trackers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("{habitId:int}")]
-        public async Task<ActionResult<HabitTrackerDto>> PostTracker(int id, HabitTrackerDto dto)
+        public async Task<ActionResult<HabitTrackerDto>> PostTracker(int id, CreateHabitTrackerDto dto)
         {
             int Id = await _trackerService.CreateTrackerAsync(id, dto);
             return CreatedAtAction(nameof(GetTrackerByIdAsync), new {id = Id}, dto);

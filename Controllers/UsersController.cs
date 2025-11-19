@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MagicalHabitTracker.Data;
 using MagicalHabitTracker.Model;
-using MagicalHabitTracker.Dto;
 using MagicalHabitTracker.Service;
 using Microsoft.AspNetCore.Authorization;
+using MagicalHabitTracker.Dto.UserDtos;
 
 namespace MagicalHabitTracker.Controllers
 {
@@ -28,7 +28,7 @@ namespace MagicalHabitTracker.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> RegisterUser(UserRegistrationDto userDto)
+        public async Task<ActionResult<User>> RegisterUser(RegisterUserDto userDto)
         {
             var registered = await _authenticationService.RegistrationUserAsync(userDto);
             if (registered == null)
@@ -39,7 +39,7 @@ namespace MagicalHabitTracker.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserLoginDto>> LoginUser(UserLoginDto loginDto)
+        public async Task<ActionResult<LoginUserDto>> LoginUser(LoginUserDto loginDto)
         {
             var token = await _authenticationService.LoginAsync(loginDto);
 

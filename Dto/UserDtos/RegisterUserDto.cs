@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace MagicalHabitTracker.Dto
+namespace MagicalHabitTracker.Dto.UserDtos
 {
-    public class UserRegistrationDto
+    public class RegisterUserDto
     {
 
         public string? FirstName { get; set; }

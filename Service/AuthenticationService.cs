@@ -1,5 +1,4 @@
 ﻿using MagicalHabitTracker.Data;
-using MagicalHabitTracker.Dto;
 using MagicalHabitTracker.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using MagicalHabitTracker.Dto.UserDtos;
 
 
 namespace MagicalHabitTracker.Service
@@ -26,7 +26,7 @@ namespace MagicalHabitTracker.Service
             this.appDbContext = appDbContext;
             this.passwordHasher = passwordHasher;
         }
-        public async Task<string> LoginAsync(UserLoginDto userLoginDto, CancellationToken cancellationToken = default)
+        public async Task<string> LoginAsync(LoginUserDto userLoginDto, CancellationToken cancellationToken = default)
         {
 
             if (String.IsNullOrWhiteSpace(userLoginDto.Email.ToLower()) || String.IsNullOrWhiteSpace(userLoginDto.Username.ToLower()))
@@ -71,7 +71,7 @@ namespace MagicalHabitTracker.Service
         }
 
         //Il cancellation token serve per annullare l'operazione asincrona se necessario
-        public async Task<User> RegistrationUserAsync(UserRegistrationDto userRegistrationDto, CancellationToken cancellationToken = default)
+        public async Task<User> RegistrationUserAsync(RegisterUserDto userRegistrationDto, CancellationToken cancellationToken = default)
         {
             if (String.IsNullOrWhiteSpace(userRegistrationDto.Email) || String.IsNullOrWhiteSpace(userRegistrationDto.Password) ||
                 String.IsNullOrWhiteSpace(userRegistrationDto.Username) || String.IsNullOrWhiteSpace(userRegistrationDto.PhoneNumber))

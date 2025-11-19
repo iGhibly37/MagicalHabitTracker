@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MagicalHabitTracker.Model
 {
-    public class Tracker
+    public class HabitTracker
     {
         [Key]
         public int Id { get; set; }
@@ -11,14 +11,9 @@ namespace MagicalHabitTracker.Model
         [ForeignKey("Habit"), Required]
         public int HabitId { get; set; }
 
-        public bool IsCompleted { get; set; }
-
-        [Required]
-        public DateOnly Date {  get; set; } 
-
         public Habit Habit { get; set; }
 
-        public DateTime? CompletedAtUtc { get; set; }
+        public DateTime CompletedAtUtc { get; set; } = DateTime.UtcNow;        
 
     }
 }

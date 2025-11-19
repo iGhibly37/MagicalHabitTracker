@@ -5,6 +5,17 @@ namespace MagicalHabitTracker.utils
     public class Utils
     {
 
+
+
+        /// <summary>
+        /// A function to calculate the next due date in UTC based on the periodicity, schedule, timezone, and current UTC time.
+        /// </summary>
+        /// <param name="periodicity"></param>
+        /// <param name="schedule"></param>
+        /// <param name="tz"></param>
+        /// <param name="utcNow"></param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException"></exception>
         public static DateTime? CalculateNextDueUtc(Periodicity periodicity, HabitSchedule schedule, TimeZoneInfo tz, DateTime utcNow)
         {
             DateTime localNow = TimeZoneInfo.ConvertTimeFromUtc(utcNow, tz);
@@ -29,9 +40,17 @@ namespace MagicalHabitTracker.utils
                 localReminder = localNext.AddMinutes(-schedule.ReminderOffsetsMinutes);
             }
 
-            return TimeZoneInfo.ConvertTimeFromUtc(localReminder, tz);
+            return TimeZoneInfo.ConvertTimeToUtc(localReminder, tz);
         }
 
+
+
+        /// <summary>
+        /// A function to calculate the next daily occurrence of a preferred time.
+        /// </summary>
+        /// <param name="localNow"></param>
+        /// <param name="pref"></param>
+        /// <returns></returns>
         public static DateTime NextDaily(DateTime localNow, TimeOnly pref)
         {
             var candidate = localNow.Date + pref.ToTimeSpan();
@@ -43,6 +62,15 @@ namespace MagicalHabitTracker.utils
             return candidate;
         }
 
+
+
+        /// <summary>
+        /// A function to calculate the next weekly occurrence of a preferred time based on a days mask.
+        /// </summary>
+        /// <param name="localNow"></param>
+        /// <param name="pref"></param>
+        /// <param name="mask"></param>
+        /// <returns></returns>
         public static DateTime NextWeekly(DateTime localNow, TimeOnly pref, WeeklyDaysMask mask)
         {
             for (int i = 0; i < 7; i++)
@@ -63,6 +91,12 @@ namespace MagicalHabitTracker.utils
         }
 
 
+        /// <summary>
+        /// A function to check if a DayOfWeek is included in a WeeklyDaysMask.
+        /// </summary>
+        /// <param name="dow"></param>
+        /// <param name="mask"></param>
+        /// <returns>A boolean valor to indicate if that day is present inside the mask</returns>
         public static bool IsInMask(DayOfWeek dow, WeeklyDaysMask mask) => dow switch
         {
             DayOfWeek.Sunday => mask.HasFlag(WeeklyDaysMask.Sunday),
@@ -76,6 +110,12 @@ namespace MagicalHabitTracker.utils
         };
 
 
+        /// <summary>
+        /// A function to get TimeZoneInfo from a timezone ID, throwing ArgumentException if invalid.
+        /// </summary>
+        /// <param name="timeZoneId"></param>
+        /// <returns>Returns that specific TimeZoneInfo related to a timezon ID such as Europe/Rome</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static TimeZoneInfo GetTimeZoneInfo(string timeZoneId)
         {
             try

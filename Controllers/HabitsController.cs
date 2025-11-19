@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MagicalHabitTracker.Data;
 using MagicalHabitTracker.Model;
-using MagicalHabitTracker.Dto;
 using MagicalHabitTracker.Service;
 using System.Security.Claims;
+using MagicalHabitTracker.Dto.HabitDtos;
+
 
 namespace MagicalHabitTracker.Controllers
 {
@@ -29,7 +30,7 @@ namespace MagicalHabitTracker.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GeAll(){
-           List<Habit> habits = await _habitService.GetAllHabitsAsync();
+           List<GetHabitDto> habits = await _habitService.GetAllHabitsAsync();
             return Ok(habits);
         }
 
@@ -41,7 +42,7 @@ namespace MagicalHabitTracker.Controllers
         }
 
         [HttpPost("registerHabit")]
-        public async Task<IActionResult> Create(HabitEditDto habitDto)
+        public async Task<IActionResult> Create(CreateHabitDto habitDto)
         {
             var sub = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if(!int.TryParse(sub, out int userId))
@@ -55,9 +56,9 @@ namespace MagicalHabitTracker.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Edit(int id, HabitEditDto habitDto)
+        public async Task<IActionResult> Edit(int id, UpdateHabitDto habitUpdateDto)
         {
-            var habit = await _habitService.UpdateHabitAsync(id, habitDto);
+            var habit = await _habitService.UpdateHabitAsync(id, habitUpdateDto);
             if(!habit) return NotFound();
             return NoContent();
                 

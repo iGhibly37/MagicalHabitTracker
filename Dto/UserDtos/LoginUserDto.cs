@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MagicalHabitTracker.Dto
+namespace MagicalHabitTracker.Dto.UserDtos
 {
-    public class UserLoginDto
+    public class LoginUserDto
     {
         public string? Email { get; set; }
 
