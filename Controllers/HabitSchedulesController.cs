@@ -37,6 +37,7 @@ namespace MagicalHabitTracker.Controllers
         public async Task<ActionResult<GetHabitScheduleDto>> GetHabitSchedule(int id)
         {
             var schedule = await _habitScheduleService.GetScheduleByIdAsync(id);
+
             if(schedule == null) return NotFound();
 
             return Ok(schedule);
@@ -51,15 +52,15 @@ namespace MagicalHabitTracker.Controllers
             return NoContent();
         }
 
-        [HttpPost("{id:int}")]
-        public async Task<ActionResult<CreateHabitScheduleDto>> PostHabitSchedule(int habitId, CreateHabitScheduleDto dto)
+        [HttpPost("{habitId:int}/schedule")]
+        public async Task<ActionResult<CreateHabitScheduleDto>> PostHabitSchedule(int habitId, [FromBody] CreateHabitScheduleDto dto)
         {
-            var Id = await _habitScheduleService.CreateScheduleAsync(habitId, dto);
+            var habitScheduleId = await _habitScheduleService.CreateScheduleAsync(habitId, dto);
 
-            return CreatedAtAction(nameof(GetHabitSchedule), new { id = Id }, dto);
+            return CreatedAtAction(nameof(GetHabitSchedule), new { id = habitScheduleId }, dto);
         }
 
-        [HttpPatch("/patch/{id:int}")]
+        [HttpPatch("{habitId:int}/patchSchedule")]
         public async Task<ActionResult<PatchScheduleDto>> PatchHabitSchedule(int habitId, PatchScheduleDto dto)
         {
             bool updated = await _habitScheduleService.PatchScheduleAsync(habitId, dto);

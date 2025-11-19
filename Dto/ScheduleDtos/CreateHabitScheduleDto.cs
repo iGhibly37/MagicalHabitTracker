@@ -21,7 +21,5 @@ namespace MagicalHabitTracker.Dto.ScheduleDtos
 
         public DateTime? SnoozeUntilUtc { get; set; }
 
-        public int HabitId { get; set; }
-
     }
 }

@@ -20,7 +20,7 @@ namespace MagicalHabitTracker.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IHabitService _habitService;
-       
+
 
         public HabitsController(AppDbContext context, IHabitService habitService)
         {
@@ -29,14 +29,16 @@ namespace MagicalHabitTracker.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GeAll(){
-           List<GetHabitDto> habits = await _habitService.GetAllHabitsAsync();
+        public async Task<IActionResult> GeAll()
+        {
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            List<GetHabitDto> habits = await _habitService.GetAllHabitsAsync(userId);
             return Ok(habits);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id){
-            var habit = await _habitService.GetHabitByIdAsync(id);
+        public async Task<IActionResult> GetById(int id, int userId){
+            var habit = await _habitService.GetHabitByIdAsync(id, userId);
             if (habit == null) return NotFound();
             return Ok(habit);
         }

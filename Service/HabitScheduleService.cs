@@ -20,12 +20,12 @@ namespace MagicalHabitTracker.Service
         public async Task<int> CreateScheduleAsync(int habitId, CreateHabitScheduleDto habitSchedDto)
         {
             var habit = await _appDbContext.Habits.AsNoTracking().FirstOrDefaultAsync(h => h.Id == habitId);
-            bool habitExists = habit != null;
+           
 
-            if (!habitExists) throw new ArgumentException("Habit not found.", nameof(habit));
+            if (habit is null) throw new ArgumentException("Habit not found.", nameof(habit));
             
-            var schedule = await _appDbContext.Schedules.AsNoTracking().AnyAsync(s=>s.HabitId == habitId);
-            bool scheduleExists = (schedule) != null;
+            bool scheduleExists = await _appDbContext.Schedules.AsNoTracking().AnyAsync(s=>s.HabitId == habitId);
+           
 
             if (scheduleExists) throw new InvalidOperationException("A Schedule already exists for this habit.");
 
@@ -41,13 +41,13 @@ namespace MagicalHabitTracker.Service
 
             var newSchedule = new HabitSchedule
             {
+                HabitId = habitId,
                 TimeZoneId = habitSchedDto.TimeZoneId,
                 PreferredLocalTime = habitSchedDto.PreferredLocalTime,
                 WeeklyDaysMask = habitSchedDto.WeeklyDaysMask,
                 ReminderOffsetsMinutes = habitSchedDto.ReminderOffsetsMinutes,
                 IsActive = habitSchedDto.IsActive,
                 SnoozeUntilUtc = null,
-                HabitId = habitSchedDto.HabitId
             };
 
             newSchedule.NextDueUtc = newSchedule.IsActive ? Utils.CalculateNextDueUtc(habit.Periodicity, newSchedule, tz, DateTime.UtcNow) : (DateTime?)null;

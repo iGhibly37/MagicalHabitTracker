@@ -25,14 +25,12 @@ namespace MagicalHabitTracker.Controllers
             _trackerService = trackerService;
         }
 
-        // GET: api/Trackers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HabitTrackerDto>>> GetHabitTrackers()
         {
             return Ok(await _trackerService.GetAll());
         }
 
-        // GET: api/Trackers/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<HabitTrackerDto>> GetTrackerByIdAsync(int id)
         {
@@ -46,20 +44,10 @@ namespace MagicalHabitTracker.Controllers
             return Ok(tracker);
         }
 
-        //[HttpPut("{id:int}")]
-        //public async Task<IActionResult> PutTracker(int id, HabitTrackerDto dto)
-        //{
-        //    var updated = await _trackerService.UpdateTrackerAsync(id, dto);
-        //    if (!updated) return NotFound();
-        //    return NoContent();
-        //}
-
-        // POST: api/Trackers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("{habitId:int}")]
-        public async Task<ActionResult<HabitTrackerDto>> PostTracker(int id, CreateHabitTrackerDto dto)
+        public async Task<ActionResult<HabitTrackerDto>> PostTracker(int habitId, CreateHabitTrackerDto dto)
         {
-            int Id = await _trackerService.CreateTrackerAsync(id, dto);
+            int Id = await _trackerService.CreateTrackerAsync(habitId, dto);
             return CreatedAtAction(nameof(GetTrackerByIdAsync), new {id = Id}, dto);
         }
 

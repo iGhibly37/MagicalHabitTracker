@@ -15,8 +15,7 @@ namespace MagicalHabitTracker.Dto.HabitDtos
         public Periodicity Periodicity { get; set; } = Periodicity.Daily;
         [Range(1, 90)]
         public int TargetPeriod { get; set; } = 1;
-        public bool IsArchived { get; set; } = false;
-        public CreateHabitScheduleDto Schedule { get; set; }
+        //public CreateHabitScheduleDto Schedule { get; set; }
 
     }
 }

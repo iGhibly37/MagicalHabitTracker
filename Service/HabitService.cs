@@ -37,8 +37,15 @@ namespace MagicalHabitTracker.Service
                 Description = habitDto.Description,
                 Periodicity = habitDto.Periodicity,
                 TargetPeriod = habitDto.TargetPeriod,
-                IsArchived = habitDto.IsArchived,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                //HabitSchedule = habitDto.Schedule != null ? new HabitSchedule
+                //{
+                //    WeeklyDaysMask = habitDto.Schedule.WeeklyDaysMask,
+                //    TimeZoneId = habitDto.Schedule.TimeZoneId,
+                //    PreferredLocalTime = habitDto.Schedule.PreferredLocalTime,
+                //    IsActive = habitDto.Schedule.IsActive,
+                //    NextDueUtc = habitDto.Schedule.NextDueUtc
+                //} : null
             };
             appDbContext.Habits.Add(habit);
             await appDbContext.SaveChangesAsync();
@@ -57,13 +64,14 @@ namespace MagicalHabitTracker.Service
             return true;
         }
 
-        public async Task<List<GetHabitDto>> GetAllHabitsAsync()
+        public async Task<List<GetHabitDto>> GetAllHabitsAsync(int UserId)
         {
-            return await appDbContext.Habits.OrderBy(h => h.IsArchived == false)
+            return await appDbContext.Habits.Where(h=> h.UserId == UserId).OrderBy(h => h.IsArchived)
                  .ThenBy(h => h.Name)
                  .AsNoTracking()
                  .Select(h => new GetHabitDto
                  {
+                     Id = h.Id,
                      Name = h.Name,
                      Description = h.Description,
                      TargetPeriod = h.TargetPeriod,
@@ -80,10 +88,11 @@ namespace MagicalHabitTracker.Service
 
         }
 
-        public async Task<GetHabitDto?> GetHabitByIdAsync(int id)
+        public async Task<GetHabitDto?> GetHabitByIdAsync(int id, int UserId)
         {
-            return await appDbContext.Habits.AsNoTracking().Where(h => h.Id == id).Select(h => new GetHabitDto
+            return await appDbContext.Habits.AsNoTracking().Where(h => h.Id == id && h.UserId == UserId).Select(h => new GetHabitDto
             {
+                Id = h.Id,
                 Name = h.Name,
                 Description = h.Description,
                 TargetPeriod = h.TargetPeriod,
@@ -99,10 +108,11 @@ namespace MagicalHabitTracker.Service
             }).FirstOrDefaultAsync();
         }
 
-        public async Task<GetHabitDto?> GetHabitByName(string name)
+        public async Task<GetHabitDto?> GetHabitByName(string name, int UserId)
         {
-            return await appDbContext.Habits.AsNoTracking().Where(h => h.Name == name).Select(h => new GetHabitDto
+            return await appDbContext.Habits.AsNoTracking().Where(h => h.Name == name && h.UserId == UserId).Select(h => new GetHabitDto
             {
+                Id = h.Id,
                 Name = h.Name,
                 Description = h.Description,
                 TargetPeriod = h.TargetPeriod,
