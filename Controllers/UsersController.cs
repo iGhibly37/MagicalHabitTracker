@@ -10,6 +10,7 @@ using MagicalHabitTracker.Model;
 using MagicalHabitTracker.Service;
 using Microsoft.AspNetCore.Authorization;
 using MagicalHabitTracker.Dto.UserDtos;
+using MagicalHabitTracker.Dto;
 
 namespace MagicalHabitTracker.Controllers
 {
@@ -39,7 +40,7 @@ namespace MagicalHabitTracker.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<LoginUserDto>> LoginUser(LoginUserDto loginDto)
+        public async Task<ActionResult<TokenResponseDto>> LoginUser(LoginUserDto loginDto)
         {
             var token = await _authenticationService.LoginAsync(loginDto);
 
@@ -47,6 +48,17 @@ namespace MagicalHabitTracker.Controllers
                 return BadRequest("Invalid username or password.");
             
             return Ok(token);
+        }
+
+
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<TokenResponseDto>> RefreshToken(RefreshTokenRequestDto tokenRequest)
+        {
+            var tokenResponse = await _authenticationService.RefreshTokenAsync(tokenRequest);
+            if (tokenResponse is null || tokenResponse.RefreshToken is null | tokenResponse.RefreshToken is null)
+                return BadRequest("Invalid token.");
+
+            return Ok(tokenResponse);
         }
 
         [Authorize]

@@ -7,6 +7,8 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using MagicalHabitTracker.Dto.UserDtos;
+using System.Security.Cryptography;
+using MagicalHabitTracker.Dto;
 
 
 namespace MagicalHabitTracker.Service
@@ -26,7 +28,7 @@ namespace MagicalHabitTracker.Service
             this.appDbContext = appDbContext;
             this.passwordHasher = passwordHasher;
         }
-        public async Task<string> LoginAsync(LoginUserDto userLoginDto, CancellationToken cancellationToken = default)
+        public async Task<TokenResponseDto> LoginAsync(LoginUserDto userLoginDto, CancellationToken cancellationToken = default)
         {
 
             if (String.IsNullOrWhiteSpace(userLoginDto.Email.ToLower()) || String.IsNullOrWhiteSpace(userLoginDto.Username.ToLower()))
@@ -66,7 +68,13 @@ namespace MagicalHabitTracker.Service
 
             await appDbContext.SaveChangesAsync();
 
-            return GenerateJwtToken(user);
+            var ResponseDto = new TokenResponseDto
+            {
+                AccessToken = GenerateJwtToken(user),
+                RefreshToken = await CreateAndSaveRefreshToken(user)
+            };
+
+            return ResponseDto;
 
         }
 
@@ -105,8 +113,7 @@ namespace MagicalHabitTracker.Service
                 Email = userRegistrationDto.Email,
                 Address = userRegistrationDto.Address,
                 PhoneNumber = userRegistrationDto.PhoneNumber,
-                Username = userRegistrationDto.Username,
-                Role = userRegistrationDto.Role
+                Username = userRegistrationDto.Username
             };
 
             string hash = passwordHasher.HashPassword(user, userRegistrationDto.Password);
@@ -117,6 +124,34 @@ namespace MagicalHabitTracker.Service
 
             return user;
         }
+
+        private async Task<User?> ValidateRefreshTokenAsync(int userId, string refreshToken)
+        {
+            var user = await appDbContext.Users.FindAsync(userId);
+            if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow )
+            {
+                return null;
+            }
+            return user;
+        }
+
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+                rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+
+        private async Task<string> CreateAndSaveRefreshToken(User user)
+        {
+            var refreshToken = GenerateRefreshToken();
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7); 
+            await appDbContext.SaveChangesAsync();
+            return refreshToken;
+        } 
 
 
         public string GenerateJwtToken(User user)
@@ -142,6 +177,28 @@ namespace MagicalHabitTracker.Service
 
 
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+        }
+
+        public Task<TokenResponseDto?> RefreshTokenAsync(RefreshTokenRequestDto refreshTokenRequestDto)
+        {
+            var user = ValidateRefreshTokenAsync(refreshTokenRequestDto.Id, refreshTokenRequestDto.RefreshToken);
+            if (user is null)
+            {
+                return null;
+            }
+
+            return CreateResponseToken(user);
+        }
+
+        private async Task<TokenResponseDto> CreateResponseToken(Task<User?> user)
+        {
+            var response = new TokenResponseDto
+            {
+                AccessToken = GenerateJwtToken(user.Result),
+                RefreshToken = CreateAndSaveRefreshToken(user.Result).Result
+            };
+
+            return response;
         }
     }
 }

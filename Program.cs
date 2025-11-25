@@ -81,21 +81,18 @@ builder.Services
 
             ClockSkew = TimeSpan.Zero
         };
-
-        //// LOG DI DEBUG PER CAPIRE PERCHÉ FALLISCE
-        //options.Events = new JwtBearerEvents
-        //{
-        //    OnAuthenticationFailed = context =>
-        //    {
-        //        Console.WriteLine("### JWT FAILED ###");
-        //        Console.WriteLine(context.Exception.GetType().Name);
-        //        Console.WriteLine(context.Exception.Message);
-        //        return Task.CompletedTask;
-        //    }
-        //};
     });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowVite",
+        policy => policy
+            .WithOrigins("http://localhost:8080")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 var app = builder.Build();
 
@@ -116,7 +113,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseCors("AllowVite");
 app.MapControllers();
 
 app.Run();

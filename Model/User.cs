@@ -11,23 +11,27 @@ namespace MagicalHabitTracker.Model
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        [Required, MaxLength(100),   ]
+        [Required, MaxLength(100)]
         public string Email { get; set; }
-        [Required, MaxLength(100),   ]
+        [Required, MaxLength(100)]
         public string PasswordHash { get; set; }
 
-        [Required,   ]
+        [Required]
         public string Role { get; set; } = RoleEnum.User;
 
         public Address Address { get; set; }
 
-        [Required, MaxLength(15),   ]
+        [Required, MaxLength(15)]
         public string PhoneNumber { get; set; }
 
-        [Required, MaxLength(20),   ]
+        [Required, MaxLength(20)]
         public string Username { get; set; }
 
         public ICollection<Habit> Habits { get; set; } = new List<Habit>();
+
+        public string? RefreshToken { get; set; }
+
+        public DateTime? RefreshTokenExpiryTime { get; set; }
 
     }
 

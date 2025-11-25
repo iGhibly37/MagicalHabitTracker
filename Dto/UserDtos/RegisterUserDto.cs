@@ -21,7 +21,5 @@ namespace MagicalHabitTracker.Dto.UserDtos
 
         [Required, MaxLength(20)]
         public string Username { get; set; }
-        [Required]
-        public string Role { get; set; } = RoleEnum.User;
     }
 }
